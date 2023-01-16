@@ -1,14 +1,15 @@
-import logo from './logo.svg'
-import './App.css'
-import Users from './components/Users'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import * as type from '../src/redux/types'
+import React from 'react';
+import './App.css';
+import { BrowserRouter } from 'react-router-dom';
+import Navbar from './modules/navbar';
+import AppRouter from './modules/appRouter';
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <Users />
-    </div>
+      <BrowserRouter>
+          <Navbar />
+          <AppRouter />
+      </BrowserRouter>
   );
 }
 
