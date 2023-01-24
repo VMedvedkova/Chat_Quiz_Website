@@ -1,11 +1,10 @@
 const config = {
-    apiKey: "AIzaSyC06GUcdxnsyMpb--BK4n596ABph3kMGTY",
-    authDomain: "quiz-chat-user.firebaseapp.com",
-    projectId: "quiz-chat-user",
-    storageBucket: "quiz-chat-user.appspot.com",
-    messagingSenderId: "264866694873",
-    appId: "1:264866694873:web:f8909c5c86466245caa0c8",
-    measurementId: "G-ZHQV6BYQZW"
+    apiKey: "AIzaSyD3Xb0YDB7xNqIBE3x82Pc8jk_G-yftpxQ",
+    authDomain: "chat-quiz-website-15556.firebaseapp.com",
+    projectId: "chat-quiz-website-15556",
+    storageBucket: "chat-quiz-website-15556.appspot.com",
+    messagingSenderId: "917742004213",
+    appId: "1:917742004213:web:d9df6dbae325dddd46e2bc"
 };
 
 export default config;

@@ -1,13 +1,17 @@
-import React from 'react';
-import './App.css';
+import './App.css'
+import 'bootstrap/dist/css/bootstrap.min.css'
+// import { Routes, Route } from 'react-router-dom'
+import Header from "./components/header";
+// import Login from "./pages/login"
+// import MainPage from "./pages/mainPage"
 import { BrowserRouter } from 'react-router-dom';
-import Navbar from './modules/navbar';
-import AppRouter from './modules/appRouter';
+// import Navbar from './modules/navbar';
+import AppRouter from './components/appRouter';
 
 const App = () => {
   return (
       <BrowserRouter>
-          <Navbar />
+          <Header />
           <AppRouter />
       </BrowserRouter>
   );

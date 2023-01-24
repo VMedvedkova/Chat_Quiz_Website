@@ -1,0 +1,12 @@
+export const getUser = state => state.currentUser.currentUser;
+export const getAllUsers = state => state.users.users;
+export const clientId = state => state.currentUser.clientId;
+export const isUserReadyToStartQuiz = state => state.quizReducer.isUserReadyToStartQuiz;
+export const setQuiz = state => state.quizReducer.setQuiz;
+export const getQuestions = state => state.questionsList.questions;
+export const getAnswers = state => state.currentUser.answers;
+export const setCurrentQuestion = state => state.currentUser.currentQuestion;
+export const quizResult = state => state.currentUser.quizResult;
+// export const getUsersResultsList = state => state.quizState.usersResultsList;
+// export const getCurrentUserReadiness = state => state.quizState.currentUserReadiness;
+// export const getIsUserReadyToStartQuiz = state => state.quizState.isUserReadyToStartQuiz;
