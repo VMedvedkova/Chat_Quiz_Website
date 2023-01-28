@@ -28,7 +28,7 @@ export const QuestionWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 54px;
+  padding: 40px;
   line-height: 30px;
   font-size: 1rem;
 `;
@@ -41,8 +41,11 @@ export const AnswerResultImages = styled.div`
 `;
 
 export const QuestionText = styled.span`
-  color: ${colors.lightTextColor};;
+  color: ${colors.lightTextColor};
   user-select: none;
+  overflow-wrap: break-word;
+  display: block;
+  width: 100%;
 `;
 
 export const AnswerButtons = styled.div`
@@ -51,5 +54,5 @@ export const AnswerButtons = styled.div`
   flex-direction: column;
   justify-content: space-evenly;
   padding: 10px 25px;
-  font-size: 1vw;
+  font-size: 1rem;
 `;

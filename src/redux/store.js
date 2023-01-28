@@ -5,15 +5,6 @@ import rootSaga from './sagas/index'
 
 const sagaMiddleware = createSagaMiddleware()
 
-// const store = compose(
-//     applyMiddleware(sagaMiddleware),
-//     // window.devToolsExtension && window.devToolsExtension(),
-// )(createStore)(rootReduser)
-
-// 
-
-// export default store
-
 const composeEnhancers = 
     typeof window === 'object' &&
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?

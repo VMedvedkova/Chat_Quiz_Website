@@ -19,14 +19,14 @@ import CustomButton from '../../customComponents/customButton/CustomButton';
 import correctAnswerImage from '../../assets/images/correct-answer-image.svg.png';
 import notCorrectAnswerImage from '../../assets/images/not-correct-answer-image.png';
 import colors from '../../themeManager/colors';
+import QuizResults from '../quizResults';
 
 
 const Quiz = ({
-    setQuiz,
-    getQuestions,
-    getAnswers,
+    isUserReadyToStartQuiz,
     setAnswer,
-    currentQuestion
+    currentQuestion,
+    quizResult
 }) => {
     const [ answerOptions, setAnswerOptions ] = useState([])
 
@@ -41,11 +41,7 @@ const Quiz = ({
     }, [currentQuestion])
 
     const checkCorrectAnswer = (item) => {
-        console.log('item', item)
-        console.log('currentQuestion.correct_answer', currentQuestion.correct_answer)
-
         if (item === currentQuestion.correct_answer) {
-            console.log(true)
             setAnswer(true)
         } else {
             setAnswer(false)
@@ -53,8 +49,10 @@ const Quiz = ({
     }
    
     return ( 
-        setQuiz ? 
-        <ReadyForQuiz /> : <Game />
+        // (isUserReadyToStartQuiz && setQuiz) ? <Game /> : <QuizResults />
+        isUserReadyToStartQuiz ? (
+            !quizResult ? <Game /> : <QuizResults />
+        ) : <ReadyForQuiz />
     )
 }
 

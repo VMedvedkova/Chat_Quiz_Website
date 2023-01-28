@@ -13,23 +13,5 @@ export function signOut() {
         payload: null
     }
 }
-export function setAnswer(payload) {
-    return {
-        type: type.SET_ANSWER,
-        payload
-    }
-}
-export function setCurrentQuestion(payload) {
-    return {
-        type: type.SET_CURRENT_QUESTION,
-        payload
-    }
-}
-export function setResults(payload) {
-    return {
-        type: type.SET_QUIZ_RESULTS,
-        payload
-    }
-}
 
 

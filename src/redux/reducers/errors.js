@@ -3,7 +3,9 @@ import * as type from '../types'
 const initialState = {
     usersError: '',
     questionsError: '',
-    quizReadinessError: ''
+    quizReadinessError: '',
+    resultsError: '',
+    getMessageError: ''
 }
 
 const errors = (state = initialState, action) => {
@@ -22,6 +24,16 @@ const errors = (state = initialState, action) => {
             return {
                 ...state,
                 quizReadinessError: action.payload
+            }
+        case type.SET_QUIZ_RESULTS_FAILED:
+            return {
+                ...state,
+                resultsError: action.payload
+            }
+        case type.SET_USER_MESSAGE_FAILED:
+            return {
+                ...state,
+                getMessageError: action.payload
             }
         default: return state
     }

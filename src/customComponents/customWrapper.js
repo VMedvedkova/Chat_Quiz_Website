@@ -5,7 +5,7 @@ export const CustomWrapper = styled.div`
     width: 100%;
     height: 90vh;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
     background: ${colors.mainBgColor};

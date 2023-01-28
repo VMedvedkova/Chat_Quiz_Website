@@ -1,6 +1,6 @@
 import * as fb from './init';
 import firebaseCollectionTypes from './constants';
-import { getQestions, getUsers } from '../api'
+import { getQestions } from '../api'
 
 export const sendQuizReadiness = async (getUserId) => {
 
@@ -23,14 +23,11 @@ export const sendQuizReadiness = async (getUserId) => {
         console.log("Error getting documents: ", error);
     });
 
-   
-    
-
     const newUserList = queryIds[0].uid;
+
     const isUserInList = newUserList.find(item => item === getUserId);
     if (!isUserInList) 
     {
-        console.log('isUserInList', isUserInList)
         newUserList.push(getUserId)
         await fireBaseRef.doc(queryIds[0].id).update({
             uid: newUserList
@@ -38,9 +35,7 @@ export const sendQuizReadiness = async (getUserId) => {
         
     }
     
-    return newUserList.length
-   
-
+    return newUserList
 };
 
 export const sendUnsetQuizReadiness = async (getUserId) => {
@@ -100,40 +95,6 @@ export const sendAddUsersRequest = async (getUser) => {
 
     const fireBaseRef = fb.firestore.collection(firebaseCollectionTypes.USERS);
 
-    const query = await fireBaseRef
-        .get();
-    if (query.docs.length === 0) {        
-        // const results = await getUsers();
-        const results = [
-            {
-                'googleId':"105175748177826381297",
-                'name':"Валентина Медведкова",
-                'givenName':"Валентина",
-                'familyName':"Медведкова",
-                'email': "valuga007@gmail.com",
-                'imageUrl':"https://lh3.googleusercontent.com/a/AEdFTp7_7DBFSpEFEmYilatrDqjmJBeWW6xB_rhz-QCbUw=s96-c"
-            },
-            {
-                'googleId':"105175748177826381298",
-                'name':"Валентина Овечкина",
-                'givenName':"Валентина",
-                'familyName':"Овечкина",
-                'email': "valuga007@gmail.com",
-                'imageUrl':"https://lh3.googleusercontent.com/a/AEdFTp7_7DBFSpEFEmYilatrDqjmJBeWW6xB_rhz-QCbUw=s96-c"
-            },
-            {
-                'googleId':"105175748177826381299",
-                'name':"Валентина Лошадкина",
-                'givenName':"Валентина",
-                'familyName':"Лошадкина",
-                'email': "valuga007@gmail.com",
-                'imageUrl':"https://lh3.googleusercontent.com/a/AEdFTp7_7DBFSpEFEmYilatrDqjmJBeWW6xB_rhz-QCbUw=s96-c"
-            }
-        ]
-        await fireBaseRef.add({ users: [getUser] })
-            .then(docRef => userDocId = docRef.id);
-    }
-    
     const queryDocs = await fireBaseRef
         .get()
         .then((snapshot) => {
@@ -143,10 +104,7 @@ export const sendAddUsersRequest = async (getUser) => {
             }));
             return data;
         });
-    
-        userDocId = queryDocs[0].users
-
-    return userDocId;
+    return(queryDocs)
 };
 
 export const sendAddNewUserToBase = async (getUpdatedAllUsers) => {
@@ -168,76 +126,141 @@ export const sendAddNewUserToBase = async (getUpdatedAllUsers) => {
     return true;
 };
 
+
+export const setResultsList = async (getUser, getScore) => {    
+
+    const fireBaseRef = fb.firestore.collection(firebaseCollectionTypes.USERS_RESULTS);
+    const query = await fireBaseRef.get();
+    if (query.docs.length === 0) {
+        await fireBaseRef.add({
+            userResults:  [{
+                uid: getUser.googleId, 
+                name: getUser.name, 
+                score: getScore,
+                image: getUser.imageUrl
+            }]
+        })
+    }
+
+    const queryRes = await fireBaseRef.get().then((snapshot) => {
+        const data = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+        return data;
+    })
+    .catch((error) => {
+        console.log("Error getting documents: ", error);
+    });
+
+    const newResultList = queryRes[0].userResults;
+    const isUserInList = newResultList.find(item => item.uid === getUser.googleId);
+    if (!isUserInList) 
+    {
+        newResultList.push({
+            uid: getUser.googleId, 
+            name: getUser.name, 
+            score: getScore,
+            image: getUser.imageUrl
+        })
+        await fireBaseRef.doc(queryRes[0].id).update({
+            userResults: newResultList
+        }); 
+        
+    } else {
+        const newUserListBase = newResultList.filter(item => item.uid !== getUser.googleId);
+        newUserListBase.push({
+            uid: getUser.googleId, 
+            name: getUser.name, 
+            score: getScore,
+            image: getUser.imageUrl
+        })
+        await fireBaseRef.doc(queryRes[0].id).update({
+            userResults: newUserListBase
+        }); 
+    }
+};
+
+
+export const getResultsList = async () => {    
+
+    const fireBaseRef = fb.firestore.collection(firebaseCollectionTypes.USERS_RESULTS);
+    const queryIds = await fireBaseRef.get().then((snapshot) => {
+        const data = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+        return data;
+    })
+    .catch((error) => {
+        console.log("Error getting documents: ", error);
+    });
+
+    return queryIds[0].userResults
+};
+
 export const findCurrentUser = async (getUser, getAllUsers) => {
     const isUserInList = getAllUsers.find(item => item.googleId === getUser.googleId);
     if (isUserInList) return true
     else return false
 }
 
-export const sendAddUserReadinessRequest = async () => {
-    const user = fb.auth.currentUser;
+export const sendMessageRequest = async () => {  
 
-    let userReadinessDocId = '';
+    const fireBaseRef = fb.firestore.collection(firebaseCollectionTypes.MESSAGES);
 
-    const fireBaseRef = fb.firestore.collection(firebaseCollectionTypes.USERS_READINESS);
-    const query = await fireBaseRef
-        .where('uid', '==', user.uid)
-        .get();
+    const query = await fireBaseRef.get()
+
     if (query.docs.length === 0) {
-        await fb.firestore.collection(firebaseCollectionTypes.USERS_READINESS).add({
-            uid: user.uid,
-            displayName: user.displayName,
-            photoURL: user.photoURL,
+        await fb.firestore.collection(firebaseCollectionTypes.MESSAGES).add({
+            messages: []
+        })       
+    }  
+
+    const queryIds = await fireBaseRef.get().then((snapshot) => {
+        const data = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+        return data;
+    })
+    .catch((error) => {
+        console.log("Error getting documents: ", error);
+    });
+
+    return queryIds[0].id
+};
+
+export const sendMessage = async (getMessagesId, getUser, getMessage) => {
+
+    const fireBaseRef = fb.firestore.collection(firebaseCollectionTypes.MESSAGES);
+    // console.log(fb.firebase.firestore.Timestamp.now())
+    await fireBaseRef.doc(getMessagesId).update({
+        messages: fb.firebase.firestore.FieldValue.arrayUnion({
+            uid: getUser.googleId,
+            displayName: getUser.name,
+            image: getUser.imageUrl,
+            message: getMessage,
+            createdAt: (fb.firebase.firestore.Timestamp.now().seconds*10000000000)+fb.firebase.firestore.Timestamp.now().nanoseconds
         })
-            .then(docRef => userReadinessDocId = docRef.id);
-    }
+        });         
+}
 
-    return { uid: user.uid, userReadinessDocId };
-};
 
-export const sendAddUserResultsRequest = async correctAnswersCount => {
-    const user = fb.auth.currentUser;
-    const {
-        uid,
-        photoURL,
-        displayName,
-    } = user;
+export const getMessages = async () => {
 
-    let correctAnswersCountDocId = '';
+    const fireBaseRef = fb.firestore.collection(firebaseCollectionTypes.MESSAGES);
 
-    const fireBaseRef = fb.firestore.collection(firebaseCollectionTypes.USERS_RESULTS);
-    const query = await fireBaseRef
-        .where('uid', '==', uid)
-        .get();
-    if (query.docs.length === 0) {
-        await fb.firestore.collection(firebaseCollectionTypes.USERS_RESULTS).add({
-            uid,
-            displayName,
-            photoURL,
-            correctAnswersCount,
-        })
-            .then(docRef => correctAnswersCountDocId = docRef.id);
-    }
+    const query = await fireBaseRef.get().then((snapshot) => {
+        const data = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+        return data;
+    })
+    .catch((error) => {
+        console.log("Error getting documents: ", error);
+    });
 
-    return correctAnswersCountDocId;
-};
-
-export const deleteFromCollectionByDocIdRequest = async ({ type, docId }) => {
-    const fireBaseUserRef = fb.firestore.collection(type);
-
-    await fireBaseUserRef.doc(docId).delete();
-};
-
-export const checkIsUsersReadyToStartQuiz = async () => {
-    const firebaseUsersRef = fb.firestore.collection(firebaseCollectionTypes.USERS);
-    const firebaseUsersReadinessRef = fb.firestore.collection(firebaseCollectionTypes.USERS_READINESS);
-    try {
-        const userQuery = await firebaseUsersRef.get();
-        const userReadinessQuery = await firebaseUsersReadinessRef.get();
-
-        return (userQuery.docs.length && userQuery.docs.length === userReadinessQuery.docs.length);
-        // return 0;
-    } catch (error) {
-        console.error('error', error);
-    }
-};
+    return query[0].messages
+}

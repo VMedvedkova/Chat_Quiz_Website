@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { sendAddUsersRequest } from '../../firebase/quizMethods';
-import { signIn, signOut } from '../../redux/actions/currentUser'
-import { setNewUser } from '../../redux/actions/users'
 import { CustomWrapper } from '../../customComponents/customWrapper';
-import QuizResults from '../quizResults';
 import {
     GameWindow,
     GameWrapper,
@@ -22,13 +17,17 @@ import colors from '../../themeManager/colors';
 
 const Game = ({
     setQuiz,
+    setQuizWaiting,
+    unSetIsUserReadyToStartQuiz,
     getQuestions,
     getAnswers,
     setAnswer,
     currentQuestion,
-    quizResult
+    setCorrectAnswerCount
 }) => {
-    const [ answerOptions, setAnswerOptions ] = useState([])
+    const [answerOptions, setAnswerOptions] = useState([])
+    const [isDisabled, setIsDisabled] = useState(false);
+    const [enableQuiz, setEnableQuiz] = useState(false);
 
     useEffect(() => {
         if ( Object.keys(currentQuestion).length !== 0 ) {
@@ -39,27 +38,30 @@ const Game = ({
             const mixarr = (arr) => {
                 return arr.map(i=>[Math.random(), i]).sort().map(i=>i[1])
              }
-            setAnswerOptions(mixarr(ansArr))            
+            setAnswerOptions(mixarr(ansArr))
+            setEnableQuiz(true)            
         }
     }, [currentQuestion])
 
     const checkCorrectAnswer = (item) => {
-        console.log('item', item)
-        console.log('currentQuestion.correct_answer', currentQuestion.correct_answer)
-
+        setIsDisabled(true);
         if (item === currentQuestion.correct_answer) {
-            console.log(true)
+            setCorrectAnswerCount()
             setAnswer(true)
         } else {
             setAnswer(false)
         }
     }
+    
+    useEffect(() => {
+        setIsDisabled(false);
+    }, [currentQuestion]);
    
     return ( 
-        quizResult ? <QuizResults /> : 
-        (
+        <GameWrapper>
+        {setQuiz ? (
             getQuestions && (
-                <GameWrapper>
+                <>
                     {getAnswers.length ?
                         <AnswerResultImages>
                             {getAnswers.map((item, i) => {
@@ -67,15 +69,15 @@ const Game = ({
                                     ? <CustomImage
                                         key={i}
                                         image={correctAnswerImage}
-                                        width={'31px'}
-                                        height={'31px'}
+                                        width={'25px'}
+                                        height={'25px'}
                                         padding={'5px'}
                                     />
                                     : <CustomImage
                                         key={i}
                                         image={notCorrectAnswerImage}
-                                        width={'31px'}
-                                        height={'31px'}
+                                        width={'25px'}
+                                        height={'25px'}
                                         padding={'5px'}
                                     />
                             })}
@@ -95,20 +97,34 @@ const Game = ({
                                 return (
                                 <CustomButton
                                     key={i}
+                                    fontSize={'1rem'}
                                     text={item}
-                                    // isDisabled={'isDisabled'}
+                                    isDisabled={isDisabled}
                                     callback={() => {checkCorrectAnswer(item)}}
+                                    activeBackgroundColor={item !== currentQuestion.correct_answer && `${colors.wrongAnswerBgColor}`}
                                 />
                                 )
                                 })
                             }
                         </AnswerButtons>
                     </GameWindow>
-                </GameWrapper>
+                </>
+            )    
+        ) : ( setQuizWaiting ? 
+            <CustomWrapper>
+                <div>
+                <p>You are READY for Quiz!<br />
+                Please, wait for other students to be ready</p>
+                <CustomButton
+                text={'CANCEL'}
+                callback={unSetIsUserReadyToStartQuiz}
+            /></div></CustomWrapper>
+            : <CustomWrapper><p>Loading...</p></CustomWrapper>
             )
-            
-        )
+        }
+        </GameWrapper>
     )
+
 }
 
 export default Game

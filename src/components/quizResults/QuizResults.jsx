@@ -1,38 +1,64 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { sendAddUsersRequest } from '../../firebase/quizMethods';
-import { signIn, signOut } from '../../redux/actions/currentUser'
-import { setNewUser } from '../../redux/actions/users'
 import { CustomWrapper } from '../../customComponents/customWrapper';
 import {
-    GameWindow,
-    GameWrapper,
-    QuestionText,
-    AnswerButtons,
-    QuestionWrapper,
-    AnswerResultImages,
-} from '../../customComponents/quizStyled';
+    User,
+    Scores,
+    ScoresHeader,
+    ResultsWrapper,
+    ScoresContainer,
+} from '../../customComponents/resultStyled';
 import CustomImage from '../../customComponents/customImage/CustomImage';
 import CustomButton from '../../customComponents/customButton/CustomButton';
-import correctAnswerImage from '../../assets/images/correct-answer-image.svg.png';
-import notCorrectAnswerImage from '../../assets/images/not-correct-answer-image.png';
-import colors from '../../themeManager/colors';
 
 
 const QuizResults = ({
-    quizResult
+    resultsList,
+    resetInitialState
 }) => {
-    
-    return ( 
-        quizResult && 
-        <CustomWrapper>
-            <p>
-                Your Quiz is finished!<br />
-                Congratulation!
-            </p>
-        </CustomWrapper>
-        
-    )
-}
 
+    const [loading, setLoading] = useState(true)
+
+    const handleClick = () => {
+        resetInitialState()
+    } 
+
+    useEffect(() => {
+        resultsList.length ? setLoading(false) : setLoading(true)
+    }, [resultsList])
+
+    return (
+        <ResultsWrapper>
+            {loading ? (<ScoresContainer>
+                    <User children={'Loading...'}/>
+                    </ScoresContainer>) : (
+                        <ScoresContainer>
+                        <ScoresHeader>
+                        <User children={'user'}/>
+                        <Scores children={'scores'}/>
+                        </ScoresHeader>
+                        {resultsList.map(item =>
+                            <ScoresHeader key={item.uid+item.score}>
+                                 <CustomImage
+                                     image={item.image}
+                                     key={item.uid+item.score}
+                                     width={'25px'}
+                                     height={'25px'}
+                                     borderRadius={'50px'}
+                                 />
+                                 <User children={item.name}/>
+                                 <Scores children={item.score}/>
+                             </ScoresHeader>
+                         )}
+                </ScoresContainer>
+                    )}
+            <CustomWrapper>
+                <CustomButton
+                    text={'ok'}
+                    callback={handleClick}
+                />
+            </CustomWrapper>
+        </ResultsWrapper>
+        )   
+}
+        
 export default QuizResults

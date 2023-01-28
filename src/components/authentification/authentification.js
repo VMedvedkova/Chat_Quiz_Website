@@ -1,9 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { GoogleLogin, GoogleLogout } from 'react-google-login';
+import { useEffect } from 'react';
 import { gapi } from 'gapi-script';
-import { useSelector, useDispatch } from 'react-redux';
-import store from '../../redux/store';
-import { signIn, signOut } from '../../redux/actions/currentUser'
 
 const AuthConfig = ({
     clientId

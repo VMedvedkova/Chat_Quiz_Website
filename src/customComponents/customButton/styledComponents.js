@@ -18,7 +18,7 @@ export const CustomButtonWrapper = styled.div`
         background: ${props => (props.activeBackgroundColor ? props.activeBackgroundColor : `${colors.brandBgColor}`)};
       
        ${ButtonText} {
-          color: ${colors.lightTextColor};
+        color: ${colors.lightTextColor};
        }
     }
        
@@ -33,6 +33,7 @@ export const Button = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 5px 20px;
+    padding: 5px 40px;
     user-select: none;
+    text-align: center
 `;
