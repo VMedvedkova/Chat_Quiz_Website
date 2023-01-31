@@ -23,8 +23,10 @@ const QuizResults = ({
     } 
 
     useEffect(() => {
-        resultsList.length ? setLoading(false) : setLoading(true)
+        resultsList && resultsList.length ? setLoading(false) : setLoading(true)
     }, [resultsList])
+
+    console.log(resultsList)
 
     return (
         <ResultsWrapper>
@@ -36,7 +38,7 @@ const QuizResults = ({
                         <User children={'user'}/>
                         <Scores children={'scores'}/>
                         </ScoresHeader>
-                        {resultsList.map(item =>
+                        {resultsList && resultsList.map(item =>
                             <ScoresHeader key={item.uid+item.score}>
                                  <CustomImage
                                      image={item.image}

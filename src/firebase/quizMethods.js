@@ -115,13 +115,21 @@ export const sendAddNewUserToBase = async (getUpdatedAllUsers) => {
     const docId = await fireBaseRef
         .get()
         .then((snapshot) => {
-            const data = snapshot.docs.map((doc) => doc.id);
-            return data[0];
+            const data = snapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            return data;
+        });
+    const defaultUserList = docId[0].id;
+    console.log('defaultUserList', defaultUserList)
+        await fireBaseRef.doc(defaultUserList).update({
+            users: getUpdatedAllUsers
         });   
-    await fireBaseRef.doc(docId).delete();
+    // await fireBaseRef.doc(docId).delete();
     
-    await fireBaseRef.add({ users: getUpdatedAllUsers })
-            .then(docRef => userDocId = docRef.id);
+    // await fireBaseRef.add({ users: getUpdatedAllUsers })
+    //         .then(docRef => userDocId = docRef.id);
 
     return true;
 };

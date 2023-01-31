@@ -2,7 +2,6 @@ import React from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import LoginPage from "../../pages/login"
 import MainPage from "../../pages/mainPage"
-import { useSelector, useDispatch } from 'react-redux';
 
 const publicRoutes = [
     {

@@ -1,6 +1,3 @@
-import * as selectors from '../redux/selectors';
-import { useSelector, useDispatch } from 'react-redux'
-
 export const getQestions = async () => {
     const request = await fetch('https://opentdb.com/api.php?amount=10&difficulty=hard')
     return await request.json()

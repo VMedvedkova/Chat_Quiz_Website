@@ -17,12 +17,38 @@ export function chatMessagesEventChannel() {
                         emmiter(actions.setUserMessage(messagesArray)); 
                     }
                   
-                });
-
-           
+                });           
 
             const listeners = [
                 fb.firebase.database().ref(constants.MESSAGES)
+            ];
+
+            return () => listeners.forEach(listener => listener.off(listener));
+        }
+    );
+
+    return listener;
+}
+
+export function resultsEventChannel() {
+    const listener = eventChannel(
+        emmiter => {
+            fb.firebase.firestore().collection(constants.USERS_RESULTS)
+                .onSnapshot({ includeMetadataChanges: true }, snapshot => {
+
+                    const results = snapshot.docChanges().map( result => result.doc.data());
+                    console.log('results', results)
+                    let resultsArray = []
+                    if ( results[0] !== undefined ) 
+                        { 
+                            resultsArray = results[0].userResults
+                        emmiter(actions.setUsersResultsList(resultsArray)); 
+                    }
+                    
+                });
+
+            const listeners = [
+                fb.firebase.database().ref(constants.USERS_RESULTS)
             ];
 
             return () => listeners.forEach(listener => listener.off(listener));

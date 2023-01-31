@@ -161,10 +161,16 @@ export function* handleSendMessages() {
 
 
 export function* setUserMessages(array) {
-if (array.length) { 
-    const filteredMessagesList = array.filter(message => message.createdAt);
-    filteredMessagesList.length && (yield put(setUserMessageToStore(filteredMessagesList)));
+    if (array.length) { 
+        const filteredMessagesList = array.filter(message => message.createdAt);
+        filteredMessagesList.length && (yield put(setUserMessageToStore(filteredMessagesList)));
+    }
 }
+
+export function* setUserResults(array) {
+    if (array.length) { 
+        yield put(setUsersResultsList(array))
+    }
 }
 
 
@@ -176,6 +182,14 @@ export function* startListener() {
         yield put(eventAction);
     }
 }
+export function* startListenerResults() {
+    const resultsEventChannel = eventChannels.resultsEventChannel();
+    while (true) {
+        const eventAction = yield take(resultsEventChannel);
+        console.log(eventAction)
+        yield put(eventAction);
+    }
+}
 export function* watchChat() {
     yield all([
         fork(startListener),
@@ -184,11 +198,18 @@ export function* watchChat() {
     ]);
 };
 
+export function* watchResults() {
+    yield all([
+        fork(startListenerResults),
+        takeEvery(type.SET_QUIZ_RESULTS, setUserResults)
+    ]);
+};
 
 export default function* rootSaga() {
    yield spawn(watchQuestions)
    yield spawn(watchUsers)  
    yield spawn(watchQuiz)   
-   yield spawn(watchChat)  
+   yield spawn(watchChat)     
+   yield spawn(watchResults)  
 }
 
